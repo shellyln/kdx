@@ -1,0 +1,74 @@
+{
+  "name": "kdx",
+  "version": "0.0.1",
+  "description": "kintone CLI for development & deployment, with Developer Experience",
+  "keywords": [
+    "kintone",
+    "DX",
+    "developer experience",
+    "TypeScript",
+    "validation",
+    "tynder"
+  ],
+  "main": "index.js",
+  "bin": {
+    "kdx": "./bin.kdx/index.js"
+  },
+  "browserslist": [
+    "last 1 Chrome versions"
+  ],
+  "engines": {
+    "node": ">=12.x"
+  },
+  "dependencies": {
+    "@kintone/rest-api-client": "^1.0.0",
+    "@types/dotenv": "^8.2.0",
+    "@types/node": "^13.9.2",
+    "chai": "^4.2.0",
+    "dotenv": "^8.2.0",
+    "mocha": "^7.1.1",
+    "rimraf": "^3.0.2",
+    "tynder": "^0.3.11"
+  },
+  "devDependencies": {
+    "@kintone/dts-gen": "^3.0.1",
+    "@types/chai": "^4.2.11",
+    "@types/mocha": "^7.0.2",
+    "@types/rimraf": "^2.0.3",
+    "@typescript-eslint/eslint-plugin": "^2.24.0",
+    "@typescript-eslint/parser": "^2.24.0",
+    "eslint": "^6.8.0",
+    "npm-run-all": "^4.1.5",
+    "parcel-bundler": "^1.12.4",
+    "sass": "^1.26.3",
+    "shx": "^0.3.2",
+    "typescript": "^3.8.3"
+  },
+  "scripts": {
+    "clean": "rimraf ./bin ./bin.kdx ./bin.test ./dist ./helpers ./.cache",
+    "schema": "run-s schema:kdx",
+    "schema:kdx": "run-s schema:kdx:1 schema:kdx:2",
+    "schema:kdx:1": "tynder compile-as-ts --indir schema.kdx --outdir src.kdx/schema-compiled",
+    "schema:kdx:2": "tynder gen-ts --indir schema.kdx --outdir src.kdx/schema-types",
+    "build": "run-s build:kdx build:helpers",
+    "build:kdx": "run-s build:kdx:1 build:kdx:spec",
+    "build:kdx:1": "parcel build src.kdx/index.ts --out-dir bin.kdx --target node --bundle-node-modules --no-minify",
+    "build:kdx:spec": "parcel build src.kdx/_spec/*.ts --out-dir bin.test --target node --bundle-node-modules --no-minify",
+    "build:helpers": "run-s build:helpers:1 build:helpers:2",
+    "build:helpers:1": "tsc --project tsconfig.helper.json --outDir ./helpers --declaration --declarationDir ./helpers",
+    "build:helpers:2": "shx cp src.helpers/*.css ./helpers/.",
+    "test": "mocha bin.test/*.js",
+    "lint": "eslint ./src.kdx/** ./src.helpers/** -c ./.eslintrc --ext .js,.ts",
+    "prepublishOnly": "run-s clean build test lint"
+  },
+  "author": "shellyln",
+  "homepage": "https://shellyln.github.io/",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shellyln/kdx.git"
+  },
+  "bugs": {
+    "url": "https://github.com/shellyln/kdx/issues"
+  }
+}

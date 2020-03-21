@@ -1,0 +1,91 @@
+// Following `ViewEntry` type definitions are copied from @kintone/rest-api-client.
+// Copyright (c) Cybozu, Inc.
+// license: MIT
+
+// Copyright (c) 2020 Shellyl_N and Authors
+// license: MIT
+// https://github.com/shellyln
+
+
+// @ts-nocheck
+
+
+export interface MetaIndex {
+    apps: {
+        [appName: string]: {
+            [profileName: string]: {
+                appId: number;
+                guestSpaceId?: number;
+                preview: boolean;
+            };
+        };
+    };
+}
+
+
+export interface MetaHashIndex {
+    [entryName: string]: string;
+}
+
+
+export interface MetaResourceEntry {
+    name: string;
+    target: string[];
+    file: {
+        [profileName: string]: string;
+    };
+}
+
+
+export interface MetaResourcesIndex {
+    js: MetaResourceEntry[];
+    css: MetaResourceEntry[];
+}
+
+
+export interface ViewEntryBase {
+    index: string | number;
+    builtinType?: "ASSIGNEE";
+    // id: string;
+    // name: string;
+    filterCond: string;
+    sort: string;
+}
+
+
+export interface ListViewEntry extends ViewEntryBase {
+    @recordType
+    type: "LIST";
+    fields: string[];
+}
+
+
+export interface CalendarViewEntry extends ViewEntryBase {
+    @recordType
+    type: "CALENDAR";
+    date: string;
+    title: string;
+}
+
+
+export interface CustomViewEntry extends ViewEntryBase {
+    @recordType
+    type: "CUSTOM";
+    html: string;
+    pager: boolean;
+    device: "DESKTOP" | "ANY";
+}
+
+
+export type ViewEntry = ListViewEntry | CalendarViewEntry | CustomViewEntry;
+
+
+export interface MetaViewsIndex {
+    [viewResourceName: string]: {
+        view: ViewEntry;
+        [profileName: string]: {
+            id: string;
+            name: string;
+        };
+    };
+}
