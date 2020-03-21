@@ -37,12 +37,12 @@ vi .env
 vi meta/meta-info.json
 
 # first pull and push
-kdx pull 42
+kdx pull MyApp1
 npm run build
-kdx push 42
+kdx push MyApp1
 
 # debug app
-npm run serve:MyFirstApp
+npm run serve:MyApp1
 
 # first commit
 git add .
@@ -55,7 +55,7 @@ git commit -m "initial commit"
 
 * Pull one app:
 ```sh
-kdx pull <AppId>
+kdx pull <AppName>
 ```
 
 * Pull all apps:
@@ -67,7 +67,7 @@ kdx pull --all
 
 * Push one app:
 ```sh
-kdx push <AppId>
+kdx push <AppName>
 ```
 
 * Push all apps:
@@ -77,7 +77,7 @@ kdx pull --all
 
 * Push one app (ignore revision / deproying to the other app):
 ```sh
-kdx push <AppId> --force
+kdx push <AppName> --force
 ```
 
 ### Fetch from kintone
@@ -85,7 +85,7 @@ Similar to `pull`, but no code generation is performed.
 
 * Fetch one app:
 ```sh
-kdx fetch <AppId>
+kdx fetch <AppName>
 ```
 
 * Fetch all apps:
@@ -97,7 +97,7 @@ kdx fetch --all
 
 * Generate code for one app:
 ```sh
-kdx gen-schema <AppId>
+kdx gen-schema <AppName>
 ```
 
 * Generate code for all apps:
@@ -110,7 +110,7 @@ Similar to `gen-schema`, but it uses pre-generated `schema/*.tss`.
 
 * Generate code for one app:
 ```sh
-kdx compile-schema <AppId>
+kdx compile-schema <AppName>
 ```
 
 * Generate code for all apps:
@@ -146,7 +146,7 @@ KINTONE_PASSWORD_production  = XXXXXXXXXXXXXXXXXXXXXXXXXX
     "apps": {
         "foo": {              // <- App name
             "development": {  // <- Target profile
-                "appId": 38,
+                "appId": 38,  // <- App id
                 "preview": false
             },
             "staging": {

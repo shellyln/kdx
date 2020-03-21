@@ -99,9 +99,9 @@ async function cli() {
         console.log(
 `kdx - kintone CLI for development & deployment, with Developer Experience
 
-kdx <subcommand> <appId> --force
+kdx <Subcommand> <AppName> [--force]
 
-subcommands:
+Subcommands:
     compile-schema
     gen-schema
     fetch
