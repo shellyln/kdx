@@ -14,7 +14,7 @@ import KdxMetaSchema_            from '../../schema-compiled/kdx-meta';
 
 
 
-const ENV_PATH = path.join(__dirname, '../.env');
+const ENV_PATH = path.join(process.cwd(), './.env');
 export const dotenv = config({
     path: ENV_PATH,
 });
