@@ -39,7 +39,7 @@ vi meta/meta-info.json
 # first pull and push
 kdx pull MyApp1
 npm run build
-kdx push MyApp1
+kdx push MyApp1 --force
 
 # debug app
 npm run serve:MyApp1
