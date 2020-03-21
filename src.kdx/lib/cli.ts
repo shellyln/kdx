@@ -95,6 +95,21 @@ async function cli() {
             await commandRunner(async (aName) => await saveAppSchema(projectDir, aName), projectDir, options.appName);
         }
         break;
+    default:
+        console.log(
+`kdx - kintone CLI for development & deployment, with Developer Experience
+
+kdx <subcommand> <appId> --force
+
+subcommands:
+    compile-schema
+    gen-schema
+    fetch
+    push
+    pull
+`
+        );
+        break;
     }
 }
 

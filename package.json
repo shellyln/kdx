@@ -1,6 +1,6 @@
 {
   "name": "kdx",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "kintone CLI for development & deployment, with Developer Experience",
   "keywords": [
     "kintone",
@@ -51,8 +51,11 @@
     "schema:kdx:1": "tynder compile-as-ts --indir schema.kdx --outdir src.kdx/schema-compiled",
     "schema:kdx:2": "tynder gen-ts --indir schema.kdx --outdir src.kdx/schema-types",
     "build": "run-s build:kdx build:helpers",
-    "build:kdx": "run-s build:kdx:1 build:kdx:spec",
+    "build:kdx": "run-s build:kdx:1 build:kdx:2 build:kdx:3 build:kdx:4 build:kdx:spec",
     "build:kdx:1": "parcel build src.kdx/index.ts --out-dir bin.kdx --target node --bundle-node-modules --no-minify",
+    "build:kdx:2": "cat src.kdx/shebang.txt bin.kdx/index.js > bin.kdx/index.js.tmp",
+    "build:kdx:3": "shx rm bin.kdx/index.js",
+    "build:kdx:4": "shx mv bin.kdx/index.js.tmp bin.kdx/index.js",
     "build:kdx:spec": "parcel build src.kdx/_spec/*.ts --out-dir bin.test --target node --bundle-node-modules --no-minify",
     "build:helpers": "run-s build:helpers:1 build:helpers:2",
     "build:helpers:1": "tsc --project tsconfig.helper.json --outDir ./helpers --declaration --declarationDir ./helpers",
