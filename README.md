@@ -26,7 +26,7 @@ npm install -g kdx
 
 ```sh
 # clone a template
-git clone shellyln/kdx-project-template MyProject
+git clone https://github.com/shellyln/kdx-project-template.git MyProject
 cd MyProject
 rm -rf .git/
 git init
