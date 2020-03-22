@@ -6,12 +6,13 @@
             "request": "launch",
             "name": "Launch Program (cli)",
             "program": "${workspaceRoot}/src.kdx/index.ts",
+            "cwd": "${workspaceRoot}/../KdxMyProject",
             "outFiles": [
                 "${workspaceRoot}/bin.kdx/index.js"
             ],
             "args": [
-                "push",
-                "foo",
+                "pull",
+                "MyApp1",
             ]
         }
     ]
