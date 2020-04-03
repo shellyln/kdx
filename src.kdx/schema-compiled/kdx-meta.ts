@@ -113,18 +113,27 @@ const schema = {
           [
             "file",
             {
-              "kind": "object",
-              "members": [],
-              "additionalProps": [
-                [
-                  [
-                    "string"
-                  ],
-                  {
-                    "kind": "primitive",
-                    "primitiveName": "string"
-                  }
-                ]
+              "kind": "one-of",
+              "oneOf": [
+                {
+                  "kind": "primitive",
+                  "primitiveName": "string"
+                },
+                {
+                  "kind": "object",
+                  "members": [],
+                  "additionalProps": [
+                    [
+                      [
+                        "string"
+                      ],
+                      {
+                        "kind": "primitive",
+                        "primitiveName": "string"
+                      }
+                    ]
+                  ]
+                }
               ],
               "name": "file"
             }

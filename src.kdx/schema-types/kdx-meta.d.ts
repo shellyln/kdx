@@ -17,9 +17,9 @@ export interface MetaHashIndex {
 export interface MetaResourceEntry {
     name: string;
     target: string[];
-    file: {
+    file: (string | {
         [propName0: string]: string;
-    };
+    });
 }
 
 export interface MetaResourcesIndex {
