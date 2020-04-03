@@ -186,7 +186,7 @@ export function validateThen<T>(
         ev: SubmitEvent<unknown>,
         schema: TypeAssertionMap,
         tyApp: TypeAssertion,
-        fn: (rec: T, ev: SubmitEvent<unknown>) => T | void,
+        fn: (rec: T, ev: SubmitEvent<unknown>) => T | Promise<T> | void,
         errFn?: (ev: SubmitEvent<unknown>) => void) {
 
     for (const m of (tyApp as ObjectAssertion).members) {
@@ -215,13 +215,7 @@ export function validateThen<T>(
     }
 
     const rec = validated.value;
-
-    try {
-        const retVal = fn(rec, ev);
-        if (retVal) {
-            writeBackToKintoneRecord(ev.record, retVal, tyApp);
-        }
-    } catch (e) {
+    const errHandler = (e: any) => {
         ev.error = e.message;
         try {
             if (errFn) {
@@ -230,7 +224,29 @@ export function validateThen<T>(
         } catch (e2) {
             ev.error = e2.message;
         }
-    }
+    };
 
-    return ev;
+    let evRet: typeof ev | Promise<typeof ev> = ev;
+    try {
+        const retVal = fn(rec, ev);
+        if (retVal) {
+            if ((retVal as any).then) {
+                const p = ((retVal as Promise<T>)
+                .then(d => {
+                    writeBackToKintoneRecord(ev.record, d, tyApp);
+                    return ev;
+                })
+                .catch(err => {
+                    errHandler(err);
+                    return ev; // NOTE: kintone will receive resolved promise.
+                }));
+                evRet = p;
+            } else {
+                writeBackToKintoneRecord(ev.record, retVal, tyApp);
+            }
+        }
+    } catch (e) {
+        errHandler(e);
+    }
+    return evRet;
 }
