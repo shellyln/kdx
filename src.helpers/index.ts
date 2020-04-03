@@ -136,6 +136,9 @@ export function removeBlankTableRow(rec: any, tableFieldCode: string): unknown {
         const keys = Object.keys(r.value);
         for (const k of keys) {
             const q = r.value[k];
+            if (q.type === 'CALC') {
+                continue;
+            }
             if (q.value !== void 0 && q.value !== null && q.value !== '') {
                 validRecs.push(r);
                 break;
