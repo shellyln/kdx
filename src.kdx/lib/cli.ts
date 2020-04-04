@@ -25,12 +25,13 @@ async function getAllAppNames(projectDir: string) {
 const commandRunner = async (command: (aName: string) => Promise<void>, projectDir: string, appName: string) => {
     const allAppNames = await getAllAppNames(projectDir);
     if (appName !== '--all') {
+        if (appName.startsWith('-')) {
+            throw new Error(`App name ${appName} is invalid.`);
+        }
         if (! allAppNames.includes(appName)) {
             throw new Error(`App name ${appName} is not found in 'meta/meta-info.json'.`);
         }
         await command(appName);
-    } else if (appName.startsWith('-')) {
-        throw new Error(`App name ${appName} is invalid.`);
     } else {
         for (const an of allAppNames) {
             await command(an);
