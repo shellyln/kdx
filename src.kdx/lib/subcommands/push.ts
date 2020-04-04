@@ -55,6 +55,7 @@ export const pushMetaInfos =
     const metaIndex =
         validate<MetaIndex>(JSON.parse(metaIndexText),
             getType(kdxSchema, 'MetaIndex'), { ...kdxCtxGen });
+    const allAppNames = Object.keys(metaIndex.apps);
 
     const client = getClient(profile, metaIndex.apps[appName][profile].guestSpaceId);
     const appId = metaIndex.apps[appName][profile].appId;
@@ -185,6 +186,25 @@ export const pushMetaInfos =
             if (! metaFieldsRemoteFields.includes(k)) {
                 metaFieldsNew.properties[k] = metaFields.properties[k];
                 hasNewFields = true;
+            }
+        }
+
+        for (const k of Object.keys(metaFields.properties)) {
+            const field: any = metaFields.properties[k];
+            if (field.type === 'REFERENCE_TABLE') {
+                if (field?.referenceTable?.relatedApp?.app) {
+                    const m = /^\$appName:(.+)\$$/.exec(field.referenceTable.relatedApp.app);
+                    if (m && allAppNames.includes(m[1])) {
+                        field.referenceTable.relatedApp.app = metaIndex.apps[m[1]][profile].appId;
+                    }
+                }
+            } else {
+                if (field?.lookup?.relatedApp?.app) {
+                    const m = /^\$appName:(.+)\$$/.exec(field.lookup.relatedApp.app);
+                    if (m && allAppNames.includes(m[1])) {
+                        field.lookup.relatedApp.app = metaIndex.apps[m[1]][profile].appId;
+                    }
+                }
             }
         }
 

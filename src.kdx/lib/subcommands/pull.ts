@@ -43,6 +43,8 @@ export const pullMetaInfos =
     const metaIndex =
         validate<MetaIndex>(JSON.parse(metaIndexText),
             getType(kdxSchema, 'MetaIndex'), { ...kdxCtxGen });
+    const allAppNames = Object.keys(metaIndex.apps);
+    const mapAppIdToName = new Map<number, string>(allAppNames.map(x => [metaIndex.apps[x][profile].appId, x]));
 
     const client = getClient(profile, metaIndex.apps[appName][profile].guestSpaceId);
     const appId = metaIndex.apps[appName][profile].appId;
@@ -84,6 +86,24 @@ export const pullMetaInfos =
 
     // form/fields.json
     const metaFields = await client.app.getFormFields({ app: appId, lang: lang, preview: preview ?? false });
+    for (const k of Object.keys(metaFields.properties)) {
+        const field: any = metaFields.properties[k];
+        if (field.type === 'REFERENCE_TABLE') {
+            if (field?.referenceTable?.relatedApp?.app) {
+                const n = Number.parseInt(field.referenceTable.relatedApp.app, 10);
+                if (mapAppIdToName.has(n)) {
+                    field.referenceTable.relatedApp.app = `$appName:${mapAppIdToName.get(n)}$`;
+                }
+            }
+        } else {
+            if (field?.lookup?.relatedApp?.app) {
+                const n = Number.parseInt(field.lookup.relatedApp.app, 10);
+                if (mapAppIdToName.has(n)) {
+                    field.lookup.relatedApp.app = `$appName:${mapAppIdToName.get(n)}$`;
+                }
+            }
+        }
+    }
     text = JSON.stringify(metaFields, null, 4);
     hashIndex['form/fields.json'] = hash(text);
     console.log('Fetching form/fields.json...');
