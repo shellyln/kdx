@@ -8,13 +8,24 @@ import * as path                  from 'path';
 import { compile }                from 'tynder/modules/compiler';
 import { serialize }              from 'tynder/modules/serializer';
 import { generateTypeScriptCode } from 'tynder/modules/codegen';
-import { escapeString }           from '../util';
+import { ValidationContext }      from 'tynder/modules/types';
+import { getType }                from 'tynder/modules/validator';
+import { MetaIndex }              from '../../schema-types/kdx-meta';
+import { escapeString,
+         KdxMetaSchema as kdxSchema,
+         validate }               from '../util';
 
 
 
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
 const mkdir = promisify(fs.mkdir);
+
+
+const kdxCtxGen: Partial<ValidationContext> = {
+    checkAll: true,
+    schema: kdxSchema,
+};
 
 
 const getFields = (interfaceComment: string, interfaceName: string, fields: object, nestLv: number) => {
@@ -176,11 +187,34 @@ export const generateAppSchema = async (projectDir: string, appName: string) => 
 };
 
 
+export const generateAppsEnum = async (profile: string, projectDir: string) => {
+    const metaIndexText = await readFile(path.join(projectDir,
+        'meta/meta-info.json'), { encoding: 'utf8' });
+    const metaIndex =
+        validate<MetaIndex>(JSON.parse(metaIndexText),
+            getType(kdxSchema, 'MetaIndex'), { ...kdxCtxGen });
+    const allAppNames = Object.keys(metaIndex.apps);
 
-const internalSaveAppSchema = async (projectDir: string, appName: string, schemaText: string) => {
+    const indent = ''.padEnd(4);
+    const lines: string[] = [];
+
+    const profileCode = `\n\nexport const TARGET_PROFILE = '${escapeString(profile)}'\n`;
+
+    for (const name of allAppNames) {
+        lines.push(`${name} = ${metaIndex.apps[name][profile].appId},`);
+    }
+    const enumCode = `\n\nexport enum Apps {\n${indent}${lines.join(`\n${indent}`)}\n}\n\n`;
+
+    return profileCode + enumCode;
+}
+
+
+
+const internalSaveAppSchema = async (profile: string, projectDir: string, appName: string, schemaText: string) => {
     const schema = compile(schemaText);
     const compiledText = serialize(schema, true);
-    const typesText =generateTypeScriptCode(schema);
+    const typesText = generateTypeScriptCode(schema);
+    const enumText = await generateAppsEnum(profile, projectDir);
 
     await mkdir(path.join(projectDir, 'schema'), { recursive: true });
     await mkdir(path.join(projectDir, 'src/schema-compiled'), { recursive: true });
@@ -188,16 +222,17 @@ const internalSaveAppSchema = async (projectDir: string, appName: string, schema
     await writeFile(path.join(projectDir, 'schema', `${appName}.tss`), schemaText, { encoding: 'utf8' });
     await writeFile(path.join(projectDir, 'src/schema-compiled', `${appName}.ts`), compiledText, { encoding: 'utf8' });
     await writeFile(path.join(projectDir, 'src/schema-types', `${appName}.d.ts`), typesText, { encoding: 'utf8' });
+    await writeFile(path.join(projectDir, 'src/schema-types', `Apps.meta.ts`), enumText, { encoding: 'utf8' });
 }
 
 
-export const compileAppSchema = async (projectDir: string, appName: string) => {
+export const compileAppSchema = async (profile: string, projectDir: string, appName: string) => {
     const schemaText = await readFile(path.join(projectDir, 'schema', `${appName}.tss`), { encoding: 'utf8' });
-    internalSaveAppSchema(projectDir, appName, schemaText);
+    internalSaveAppSchema(profile, projectDir, appName, schemaText);
 }
 
 
-export const saveAppSchema = async (projectDir: string, appName: string) => {
+export const saveAppSchema = async (profile: string, projectDir: string, appName: string) => {
     const schemaText = await generateAppSchema(projectDir, appName);
-    internalSaveAppSchema(projectDir, appName, schemaText);
+    internalSaveAppSchema(profile, projectDir, appName, schemaText);
 }

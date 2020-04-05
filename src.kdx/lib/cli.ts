@@ -72,12 +72,12 @@ async function cli() {
     switch (subcommand) {
     case 'compile-schema':
         {
-            await commandRunner(async (aName) => await compileAppSchema(projectDir, aName), projectDir, options.appName);
+            await commandRunner(async (aName) => await compileAppSchema(TARGET_PROFILE, projectDir, aName), projectDir, options.appName);
         }
         break;
     case 'gen-schema':
         {
-            await commandRunner(async (aName) => await saveAppSchema(projectDir, aName), projectDir, options.appName);
+            await commandRunner(async (aName) => await saveAppSchema(TARGET_PROFILE, projectDir, aName), projectDir, options.appName);
         }
         break;
     case 'fetch':
@@ -93,7 +93,7 @@ async function cli() {
     case 'pull': // fetch + gen-schema
         {
             await commandRunner(async (aName) => await pullMetaInfos(TARGET_PROFILE, projectDir, aName), projectDir, options.appName);
-            await commandRunner(async (aName) => await saveAppSchema(projectDir, aName), projectDir, options.appName);
+            await commandRunner(async (aName) => await saveAppSchema(TARGET_PROFILE, projectDir, aName), projectDir, options.appName);
         }
         break;
     default:
