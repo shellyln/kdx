@@ -10,6 +10,7 @@ import { compileAppSchema,
          saveAppSchema }   from './subcommands/gen-schema';
 import { pullMetaInfos }   from './subcommands/pull';
 import { pushMetaInfos }   from './subcommands/push';
+import { switchProfile }   from './subcommands/switch';
 
 
 
@@ -36,6 +37,15 @@ const commandRunner = async (command: (aName: string) => Promise<void>, projectD
         for (const an of allAppNames) {
             await command(an);
         }
+    }
+};
+
+
+const profileNameCommandRunner = async (command: (aName: string) => Promise<void>, projectDir: string, profileName: string) => {
+    if (! profileName.startsWith('-')) {
+        await command(profileName);
+    } else {
+        throw new Error(`Profile name ${profileName} is invalid.`);
     }
 };
 
@@ -96,18 +106,28 @@ async function cli() {
             await commandRunner(async (aName) => await saveAppSchema(TARGET_PROFILE, projectDir, aName), projectDir, options.appName);
         }
         break;
-    default:
+    case 'switch':
+        {
+            await profileNameCommandRunner(async (aName) => await switchProfile(TARGET_PROFILE, aName, projectDir), projectDir, options.appName);
+        }
+        break;
+    case 'help' : default:
         console.log(
 `kdx - kintone CLI for development & deployment, with Developer Experience
 
 kdx <Subcommand> <AppName> [--force]
+kdx <Subcommand> --all     [--force]
+kdx switch <profile>
 
 Subcommands:
-    compile-schema
-    gen-schema
-    fetch
-    push
-    pull
+    compile-schema  : Generate definition and validation codes from schema/*.tss info.
+    gen-schema      : Generate definition and validation codes from meta/**/*.json info.
+    fetch           : Fetch from kintone, but no code generation is performed.
+    push            : Push to kintone.
+    pull            : Pull from kintone, and perform code generation.
+    switch          : Switch target profile (e.g. development, staging, production).
+                      Update .env and re-generate AppID enum.
+    help            : Show this help.
 `
         );
         break;

@@ -209,12 +209,16 @@ export const generateAppsEnum = async (profile: string, projectDir: string) => {
 }
 
 
+export const saveAppsEnum = async (profile: string, projectDir: string) => {
+    const enumText = await generateAppsEnum(profile, projectDir);
+    await writeFile(path.join(projectDir, 'src/schema-types', `Apps.meta.ts`), enumText, { encoding: 'utf8' });
+};
+
 
 const internalSaveAppSchema = async (profile: string, projectDir: string, appName: string, schemaText: string) => {
     const schema = compile(schemaText);
     const compiledText = serialize(schema, true);
     const typesText = generateTypeScriptCode(schema);
-    const enumText = await generateAppsEnum(profile, projectDir);
 
     await mkdir(path.join(projectDir, 'schema'), { recursive: true });
     await mkdir(path.join(projectDir, 'src/schema-compiled'), { recursive: true });
@@ -222,7 +226,8 @@ const internalSaveAppSchema = async (profile: string, projectDir: string, appNam
     await writeFile(path.join(projectDir, 'schema', `${appName}.tss`), schemaText, { encoding: 'utf8' });
     await writeFile(path.join(projectDir, 'src/schema-compiled', `${appName}.ts`), compiledText, { encoding: 'utf8' });
     await writeFile(path.join(projectDir, 'src/schema-types', `${appName}.d.ts`), typesText, { encoding: 'utf8' });
-    await writeFile(path.join(projectDir, 'src/schema-types', `Apps.meta.ts`), enumText, { encoding: 'utf8' });
+
+    await saveAppsEnum(profile, projectDir);
 }
 
 

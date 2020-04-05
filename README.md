@@ -51,6 +51,24 @@ git commit -m "initial commit"
 
 ## Commands
 
+```
+kdx - kintone CLI for development & deployment, with Developer Experience
+
+kdx <Subcommand> <AppName> [--force]
+kdx <Subcommand> --all     [--force]
+kdx switch <profile>
+
+Subcommands:
+    compile-schema  : Generate definition and validation codes from schema/*.tss info.
+    gen-schema      : Generate definition and validation codes from meta/**/*.json info.
+    fetch           : Fetch from kintone, but no code generation is performed.
+    push            : Push to kintone.
+    pull            : Pull from kintone, and perform code generation.
+    switch          : Switch target profile (e.g. development, staging, production).
+                      Update .env and re-generate AppID enum.
+    help            : Show this help.
+```
+
 ### Pull from kintone
 
 * Pull one app:
@@ -117,6 +135,13 @@ kdx compile-schema <AppName>
 ```sh
 kdx compile-schema --all
 ```
+
+### Switch target profile
+
+```sh
+kdx switch <ProfileName>
+```
+
 
 ## Configurations
 
