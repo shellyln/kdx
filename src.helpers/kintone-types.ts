@@ -45,7 +45,7 @@ __REVISION__
 */
 
 
-export interface SimpleValueRecordField extends RecordFieldBase {
+export interface RecordSimpleValueField extends RecordFieldBase {
     type: 'SINGLE_LINE_TEXT' |
           'NUMBER' |
           'CALC' |
@@ -65,7 +65,7 @@ export interface SimpleValueRecordField extends RecordFieldBase {
 }
 
 
-export interface MultiSelectRecordField extends RecordFieldBase {
+export interface RecordMultiSelectField extends RecordFieldBase {
     type: 'CHECK_BOX' |
           'MULTI_SELECT' |
           'CATEGORY';
@@ -74,7 +74,7 @@ export interface MultiSelectRecordField extends RecordFieldBase {
 }
 
 
-export interface UserGroupOrgSelectRecordField extends RecordFieldBase {
+export interface RecordUserGroupOrgSelectField extends RecordFieldBase {
     type: 'USER_SELECT' |
           'STATUS_ASSIGNEE' |
           'ORGANIZATION_SELECT' |
@@ -87,7 +87,7 @@ export interface UserGroupOrgSelectRecordField extends RecordFieldBase {
 }
 
 
-export interface SubTableRecordField extends RecordFieldBase {
+export interface RecordSubTableField extends RecordFieldBase {
     type: 'SUBTABLE';
     value: {
         [subFieldCode: string]: RecordField;
@@ -95,7 +95,7 @@ export interface SubTableRecordField extends RecordFieldBase {
 }
 
 
-export interface FileRecordField extends RecordFieldBase {
+export interface RecordFileField extends RecordFieldBase {
     type: 'FILE';
     value: Array<{
         contentType: string;
@@ -107,11 +107,11 @@ export interface FileRecordField extends RecordFieldBase {
 
 
 export type RecordField =
-    SimpleValueRecordField |
-    MultiSelectRecordField |
-    UserGroupOrgSelectRecordField |
-    SubTableRecordField |
-    FileRecordField;
+    RecordSimpleValueField |
+    RecordMultiSelectField |
+    RecordUserGroupOrgSelectField |
+    RecordSubTableField |
+    RecordFileField;
 export type RecordFieldForApiUpdate = Pick<RecordField, 'value'> | RecordField;
 
 
