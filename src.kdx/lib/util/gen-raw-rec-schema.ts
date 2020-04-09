@@ -92,19 +92,41 @@ const getRawFields = (interfaceComment: string, interfaceName: string, fields: o
             break;
 
         case 'CALC':
+            typeName = 'string';
+            break;
         case 'FILE':
+            isArray = true;
+            typeName = `Array<{contentType: string, fileKey: string, name: string, size: string}>`;
+            break;
         case 'STATUS_ASSIGNEE':
-            continue OUTER;
+            isArray = true;
+            typeName = `Array<{code: string, name: string}>`;
+            break;
 
         // system fields
         case 'RECORD_NUMBER':
+            typeName = 'string';
+            break;
         case 'CREATED_TIME':
+            decorators += `@stereotype('lcdatetime')`;
+            typeName = 'string';
+            break;
         case 'CREATOR':
+            typeName = `{code: string, name: string}`;
+            break;
         case 'UPDATED_TIME':
+            decorators += `@stereotype('lcdatetime')`;
+            typeName = 'string';
+            break;
         case 'MODIFIER':
+            typeName = `{code: string, name: string}`;
+            break;
         case '__ID__':
+            typeName = 'string';
+            break;
         case '__REVISION__':
-            continue OUTER;
+            typeName = 'string';
+            break;
 
         // UI elements (no record fields)
         case 'REFERENCE_TABLE':
