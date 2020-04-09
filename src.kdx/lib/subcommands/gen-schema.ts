@@ -15,6 +15,7 @@ import { escapeString,
          KdxMetaSchema as kdxSchema,
          validate }               from '../util';
 import { generateAppSchema }      from '../util/gen-cooked-rec-schema';
+import { generateRawAppSchema }   from '../util/gen-raw-rec-schema';
 
 
 
@@ -76,10 +77,16 @@ const internalSaveAppSchema = async (profile: string, projectDir: string, appNam
 export const compileAppSchema = async (profile: string, projectDir: string, appName: string) => {
     const schemaText = await readFile(path.join(projectDir, 'schema', `${appName}.tss`), { encoding: 'utf8' });
     internalSaveAppSchema(profile, projectDir, appName, schemaText);
+
+    const rawSchemaText = await readFile(path.join(projectDir, 'schema', `${appName}-raw.tss`), { encoding: 'utf8' });
+    internalSaveAppSchema(profile, projectDir, `${appName}.raw`, rawSchemaText);
 }
 
 
 export const saveAppSchema = async (profile: string, projectDir: string, appName: string) => {
     const schemaText = await generateAppSchema(projectDir, appName);
     internalSaveAppSchema(profile, projectDir, appName, schemaText);
+
+    const rawSchemaText = await generateRawAppSchema(projectDir, appName);
+    internalSaveAppSchema(profile, projectDir, `${appName}.raw`, rawSchemaText);
 }
