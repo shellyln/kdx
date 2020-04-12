@@ -49,6 +49,10 @@ git add .
 git commit -m "initial commit"
 ```
 
+See also:
+[https://github.com/shellyln/kdx-project-template](https://github.com/shellyln/kdx-project-template)
+
+
 ## Commands
 
 ```
