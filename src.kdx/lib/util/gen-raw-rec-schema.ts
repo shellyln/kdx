@@ -178,7 +178,9 @@ const getRawFields = (interfaceComment: string, interfaceName: string, fields: o
             (isArray || field.required) ? '' : '?'}: {\n${
             indent2}type: '${escapeString(field.type)}';\n${
             indent2}${decorators ? decorators + '\n' + indent2 : ''}value: ${typeName};\n${
-            indent2}lookup?: boolean | 'UPDATE';\n${
+            field.type === 'SINGLE_LINE_TEXT' || field.type === 'NUMBER' ?
+                `${indent2}lookup?: boolean | 'UPDATE';\n` :
+                ''}${
             indent2}error?: string;\n${
             indent2}disabled?: boolean;\n${
             indent}};\n`;
@@ -188,6 +190,29 @@ const getRawFields = (interfaceComment: string, interfaceName: string, fields: o
 };
 
 
+const appendSystemFields = (fields: any) => {
+    if (! fields.$id) {
+        fields.$id = {
+            type: "__ID__",
+            code: "$id",
+            label: "$id",
+            enabled: false,
+            required: false,
+        };
+    }
+    if (! fields.$revision) {
+        fields.$revision = {
+            type: "__REVISION__",
+            code: "$revision",
+            label: "$revision",
+            enabled: false,
+            required: false,
+        };
+    }
+    return fields;
+}
+
+
 export const generateRawAppSchema = async (projectDir: string, appName: string) => {
     // app.json
     const metaApp = JSON.parse(await readFile(path.join(projectDir, 'meta/apps', appName, 'app.json'), { encoding: 'utf8' }));
@@ -195,6 +220,7 @@ export const generateRawAppSchema = async (projectDir: string, appName: string) 
     const metaFields = JSON.parse(await readFile(path.join(projectDir, 'meta/apps', appName, 'form/fields.json'), { encoding: 'utf8' }));
 
     const fields = metaFields.properties;
+    appendSystemFields(fields);
     const { subTableCode, code } = getRawFields(metaApp.name, 'RawApp', fields, 0);
 
     return '// @ts-nocheck\n\n' + subTableCode + code;
