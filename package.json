@@ -1,6 +1,6 @@
 {
   "name": "kdx",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "description": "kintone CLI for development & deployment, with Developer Experience",
   "keywords": [
     "kintone",
