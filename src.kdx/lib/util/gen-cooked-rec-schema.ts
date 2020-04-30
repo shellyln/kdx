@@ -131,20 +131,12 @@ const getFields = (interfaceComment: string, interfaceName: string, fields: obje
         }
         if (field.maxLength) {
             let v = '';
-            if (field.type === 'NUMBER') {
-                v = field.maxLength;
-            } else {
-                v = `'${escapeString(field.maxLength)}'`;
-            }
+            v = field.maxLength;
             decorators += `${decorators ? ' ' : ''}@maxLength(${v})`;
         }
         if (field.minLength) {
             let v = '';
-            if (field.type === 'NUMBER') {
-                v = field.minLength;
-            } else {
-                v = `'${escapeString(field.minLength)}'`;
-            }
+            v = field.minLength;
             decorators += `${decorators ? ' ' : ''}@minLength(${v})`;
         }
         decorators += `${decorators ? `\n${indent}` : ''}@meta({fieldType:'${escapeString(field.type)}'})`;
