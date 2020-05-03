@@ -1,5 +1,7 @@
 # KDX
 
+![KDX](https://shellyln.github.io/assets/image/kdx-logo.svg)
+
 kintone CLI for development & deployment, with Developer Experience.  
 Enjoy type-safe and repository-centric development!
 
